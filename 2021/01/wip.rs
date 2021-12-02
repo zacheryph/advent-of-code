@@ -4,39 +4,32 @@ use std::io::prelude::*;
 use std::path::Path;
 
 fn main() -> io::Result<()> {
-    // Stage 1: 1532
-    let lines = read_lines(Path::new("input.txt"))?;
-    let mut result: i32 = -1;
-    let mut current: i32 = 0;
-    for l in lines {
-        let num: i32 = l.unwrap().parse().unwrap();
-        if num > current {
-            result += 1
-        }
-        current = num;
-    }
+    let input_path = Path::new("input.txt");
+
+    // Stage 1 (1532): Take 2
+    let mut result = -1;
+    read_lines(input_path)?
+        .map(|l| l.unwrap().parse().unwrap())
+        .fold(0, |prev, n| {
+            if n > prev { result += 1 }
+            n
+        });
+
     println!("Stage 1: {}", result);
 
-    // Stage 2: 1571
-    // let lines = read_lines(Path::new("test.txt"))?;
-    let mut lines = read_lines(Path::new("input.txt"))?;
-    let mut result: i32 = 0;
-    let mut tail: Vec<i32> = Vec::new();
-    lines.by_ref().take(3).for_each(|l| {
-        let num: i32 = l.unwrap().parse().unwrap();
-        tail.push(num);
-    });
-
-    for l in lines {
-        tail.push(l.unwrap().parse().unwrap());
+    // Stage 2 (1571): Take 2
+    let mut depths = read_lines(input_path)?.map(|l| l.unwrap().parse().unwrap());
+    let mut tail: Vec<i32> = depths.by_ref().take(3).collect();
+    let result: i32 = depths.fold(0, |mut acc, n: i32| {
+        tail.push(n);
         let front = tail[0..=2].into_iter().fold(0, |m, &x| m + x);
         let back = tail[1..=3].into_iter().fold(0, |m, &x| m + x);
-        if back > front {
-            result += 1
-        }
-        // println!("F:{} B:{} T:{:?} => {}", front, back, tail, back > front);
+        if back > front { acc += 1 }
         tail = tail.split_off(1);
-    }
+
+        acc
+    });
+
     println!("Stage 2: {}", result);
 
     Ok(())
