@@ -45,73 +45,70 @@ impl FromStr for Movement {
     }
 }
 
+#[derive(Default, Debug)]
+struct Position {
+    advance: i32,
+    depth: i32,
+    aim: i32,
+}
+
+impl Position {
+    fn result(&self) -> i32 {
+        self.advance * self.depth
+    }
+}
+
 fn main() -> io::Result<()> {
-    // Stage 1: 1636725
-    let lines = read_lines(Path::new("input.txt"))?;
-    let mut position = 0;
-    let mut depth = 0;
+    let input_path = Path::new("input.txt");
 
-    for l in lines {
-        let movement = l.unwrap().parse::<Movement>().unwrap();
-
-        match movement {
-            Movement {
-                direction: Direction::Up,
-                units,
-            } => depth -= units,
-            Movement {
-                direction: Direction::Down,
-                units,
-            } => depth += units,
-            Movement {
-                direction: Direction::Forward,
-                units,
-            } => position += units,
-        }
-    }
-
-    println!(
-        "Stage 1: Postion:{} Depth:{} Result:{}",
-        position,
-        depth,
-        position * depth
-    );
-
-    // Stage 2: 1872757425
-    let lines = read_lines(Path::new("input.txt"))?;
-    let mut position = 0;
-    let mut depth = 0;
-    let mut aim = 0;
-
-    for l in lines {
-        let movement = l.unwrap().parse::<Movement>().unwrap();
-
-        match movement {
-            Movement {
-                direction: Direction::Up,
-                units,
-            } => aim -= units,
-            Movement {
-                direction: Direction::Down,
-                units,
-            } => aim += units,
-            Movement {
-                direction: Direction::Forward,
-                units,
-            } => {
-                position += units;
-                depth += aim * units;
+    // Stage 1 (1636725): Take 2
+    let position = read_lines(input_path)?
+        .map(|l| l.unwrap().parse::<Movement>().unwrap())
+        .fold(Position::default(), |mut pos, movement| {
+            match movement {
+                Movement {
+                    direction: Direction::Up,
+                    units,
+                } => pos.depth -= units,
+                Movement {
+                    direction: Direction::Down,
+                    units,
+                } => pos.depth += units,
+                Movement {
+                    direction: Direction::Forward,
+                    units,
+                } => pos.advance += units,
             }
-        }
-    }
+            pos
+        });
 
-    println!(
-        "Stage 1: Postion:{} Depth:{} Aim:{}, Result:{}",
-        position,
-        depth,
-        aim,
-        position * depth
-    );
+    println!("Stage 1: {:?} => {}", position, position.result());
+
+    // Stage 2 (1872757425): Take 2
+    let position = read_lines(input_path)?
+        .map(|l| l.unwrap().parse::<Movement>().unwrap())
+        .fold(Position::default(), |mut pos, movement| {
+            match movement {
+                Movement {
+                    direction: Direction::Up,
+                    units,
+                } => pos.aim -= units,
+                Movement {
+                    direction: Direction::Down,
+                    units,
+                } => pos.aim += units,
+                Movement {
+                    direction: Direction::Forward,
+                    units,
+                } => {
+                    pos.advance += units;
+                    pos.depth += pos.aim * units;
+                }
+            }
+            pos
+        });
+
+    println!("Stage 2: {:?} => {}", position, position.result());
 
     Ok(())
 }
