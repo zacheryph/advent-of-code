@@ -20,14 +20,13 @@ fn main() -> io::Result<()> {
     // Stage 2 (1571): Take 2
     let mut depths = read_lines(input_path)?.map(|l| l.unwrap().parse().unwrap());
     let mut tail: Vec<i32> = depths.by_ref().take(3).collect();
-    let result: i32 = depths.fold(0, |mut acc, n: i32| {
+    let result: i32 = depths.fold(0, |acc, n: i32| {
         tail.push(n);
         let front = tail[0..=2].into_iter().fold(0, |m, &x| m + x);
         let back = tail[1..=3].into_iter().fold(0, |m, &x| m + x);
-        if back > front { acc += 1 }
         tail = tail.split_off(1);
 
-        acc
+        if back > front { acc + 1 } else { acc }
     });
 
     println!("Stage 2: {}", result);
