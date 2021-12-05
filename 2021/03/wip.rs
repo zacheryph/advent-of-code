@@ -25,17 +25,15 @@ fn main() -> io::Result<()> {
   let epsilon = gamma ^ 0b111111111111;
   let result = epsilon * gamma;
 
-  // println!("CNT:{} EPS:{:b} GAMMA:{:b}", count, epsilon, gamma);
   println!("Stage 1: {}", result);
 
-  // Stage 2: 5774081 < ? < 6153535
+  // Stage 2: 6124992
   let mut diagnostics: Vec<usize> = read_lines(input_path)?.map(|l| usize::from_str_radix(&l.unwrap(), 2).unwrap()).collect();
   let mut current_bit = 11;
   while diagnostics.len() > 1 {
     let usage = bit_usage(&diagnostics, current_bit);
     let bit = (usage * 2 >= diagnostics.len()) as usize;
 
-    println!("OXY LEN:{} USAGE:{} BIT:{}", diagnostics.len(), usage, bit);
     diagnostics = diagnostics.into_iter().filter(|l| (l >> current_bit) & 1 == bit).collect();
     current_bit -= 1;
   }
@@ -47,13 +45,10 @@ fn main() -> io::Result<()> {
     let usage = bit_usage(&diagnostics, current_bit);
     let bit = (usage * 2 < diagnostics.len()) as usize;
 
-    println!("SCRUB LEN:{} USAGE:{} WANT:{}", diagnostics.len(), usage, bit);
     diagnostics = diagnostics.into_iter().filter(|l| (l >> current_bit) & 1 == bit).collect();
     current_bit -= 1;
   }
   let scrubber_rating = diagnostics[0];
-
-  println!("OXYGEN:{}:{:b} SCRUBBER:{}:{:b}", oxygen_rating, oxygen_rating, scrubber_rating, scrubber_rating);
 
   let result = oxygen_rating * scrubber_rating;
   println!("Stage 2: {}", result);
