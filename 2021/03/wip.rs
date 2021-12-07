@@ -1,18 +1,15 @@
-use std::fs::File;
 use std::io;
-use std::io::prelude::*;
-use std::path::Path;
+
+const INPUT: &str = include_str!("input.txt");
 
 fn main() -> io::Result<()> {
-  let input_path = Path::new("input.txt");
-
   // Stage 1: 1071734
   let mut count = 0;
   let mut gamma = 0;
   let mut bits: Vec<i32> = vec![0; 12];
-  read_lines(input_path)?.for_each(|l| {
+  INPUT.lines().for_each(|l| {
     count += 1;
-    l.unwrap().chars().enumerate().for_each(|(i, bit)| {
+    l.chars().enumerate().for_each(|(i, bit)| {
       if bit == '1' { bits[i] += 1 }
     })
   });
@@ -28,7 +25,7 @@ fn main() -> io::Result<()> {
   println!("Stage 1: {}", result);
 
   // Stage 2: 6124992
-  let mut diagnostics: Vec<usize> = read_lines(input_path)?.map(|l| usize::from_str_radix(&l.unwrap(), 2).unwrap()).collect();
+  let mut diagnostics: Vec<usize> = INPUT.lines().map(|l| usize::from_str_radix(&l, 2).unwrap()).collect();
   let mut current_bit = 11;
   while diagnostics.len() > 1 {
     let usage = bit_usage(&diagnostics, current_bit);
@@ -39,7 +36,7 @@ fn main() -> io::Result<()> {
   }
   let oxygen_rating = diagnostics[0];
 
-  let mut diagnostics: Vec<usize> = read_lines(input_path)?.map(|l| usize::from_str_radix(&l.unwrap(), 2).unwrap()).collect();
+  let mut diagnostics: Vec<usize> = INPUT.lines().map(|l| usize::from_str_radix(&l, 2).unwrap()).collect();
   let mut current_bit = 11;
   while diagnostics.len() > 1 {
     let usage = bit_usage(&diagnostics, current_bit);
@@ -58,12 +55,4 @@ fn main() -> io::Result<()> {
 
 fn bit_usage(reports: &Vec<usize>, bit: i8) -> usize {
   reports.iter().fold(0, |acc, rec| acc + ((rec >> bit) & 1 == 1) as usize)
-}
-
-fn read_lines<P>(filename: P) -> io::Result<std::io::Lines<io::BufReader<File>>>
-where
-    P: AsRef<Path>,
-{
-    let file = File::open(filename)?;
-    Ok(io::BufReader::new(file).lines())
 }

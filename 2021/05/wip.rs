@@ -1,9 +1,8 @@
 use std::collections::HashMap;
-use std::fs::File;
 use std::io;
-use std::io::prelude::*;
-use std::path::Path;
 use std::str::FromStr;
+
+const INPUT: &str = include_str!("input.txt");
 
 #[derive(PartialEq, Eq, Clone, Copy, Hash, Debug)]
 struct Point {
@@ -29,10 +28,9 @@ impl FromStr for Point {
 
 type LineFn = fn(Point, Point) -> Option<Vec<Point>>;
 
-fn avoid_count(input: std::io::Lines<std::io::BufReader<std::fs::File>>, setter: LineFn) -> i32 {
+fn avoid_count(input: &str, setter: LineFn) -> i32 {
   let mut stage: HashMap<Point, i16> = HashMap::new();
-  input.for_each(|l| {
-    let l = l.unwrap();
+  input.lines().for_each(|l| {
     let mut points = l.split(" -> ").map(|p| p.parse::<Point>().unwrap());
     if let Some(points) = setter(points.next().unwrap(), points.next().unwrap()) {
       points.iter().for_each(|p| {
@@ -71,25 +69,13 @@ fn stage_two_line(a: Point, b: Point) -> Option<Vec<Point>> {
 }
 
 fn main() -> io::Result<()> {
-  let input_file = Path::new("input.txt");
-
   // Stage 1: 7414
-  let lines = read_lines(input_file)?;
-  let avoid = avoid_count(lines, stage_one_line);
+  let avoid = avoid_count(INPUT, stage_one_line);
   println!("Stage 1: {}", avoid);
 
   // Stage 2: 19676
-  let lines = read_lines(input_file)?;
-  let avoid = avoid_count(lines, stage_two_line);
+  let avoid = avoid_count(INPUT, stage_two_line);
   println!("Stage 2: {}", avoid);
 
   Ok(())
-}
-
-fn read_lines<P>(filename: P) -> io::Result<std::io::Lines<io::BufReader<File>>>
-where
-  P: AsRef<Path>,
-{
-  let file = File::open(filename)?;
-  Ok(io::BufReader::new(file).lines())
 }
