@@ -1,7 +1,6 @@
-use std::fs::File;
 use std::io;
-use std::io::prelude::*;
-use std::path::Path;
+
+const INPUT: &str = include_str!("input.txt");
 
 #[derive(Debug, Default)]
 struct Square {
@@ -70,11 +69,9 @@ impl Board {
 }
 
 fn main() -> io::Result<()> {
-  let input_file = Path::new("input.txt");
-
-  let mut lines = read_lines(input_file)?;
-  let picks: Vec<i8> = lines.next().unwrap().unwrap().split(',').map(|x| x.parse::<i8>().unwrap()).collect();
-  let mut boards: Vec<Board> = lines.skip(1).map(|l| l.unwrap()).collect::<Vec<String>>().chunks(6).map(|b| {
+  let mut lines = INPUT.lines();
+  let picks: Vec<i8> = lines.next().unwrap().split(',').map(|x| x.parse::<i8>().unwrap()).collect();
+  let mut boards: Vec<Board> = lines.skip(1).collect::<Vec<&str>>().chunks(6).map(|b| {
     let mut squares = Vec::new();
     b.iter().take(5).enumerate().for_each(|(row, line)| {
       line.split_whitespace().enumerate().for_each(|(col, n)| {
@@ -101,12 +98,4 @@ fn main() -> io::Result<()> {
   println!("Stage 2: {}", stages.1.unwrap_or(0));
 
   Ok(())
-}
-
-fn read_lines<P>(filename: P) -> io::Result<std::io::Lines<io::BufReader<File>>>
-where
-    P: AsRef<Path>,
-{
-    let file = File::open(filename)?;
-    Ok(io::BufReader::new(file).lines())
 }
