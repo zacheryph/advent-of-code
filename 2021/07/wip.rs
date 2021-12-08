@@ -28,6 +28,11 @@ fn main() -> io::Result<()> {
   // number we really want _will_ be within one of the
   // mean. I'm not a mad scientist so... I trust them.
   // So we grab within 2 and take the smallest.
+  //
+  // truth be told, i found this after solving, i knew
+  // the answer _should?_ be the mean (because im vaguely
+  // smart... i guess), i ended up bisecting between the
+  // median and average to find it being within one of mean.
   let range: Vec<i32> = ((average -2)..=(average+2)).map(|n| stage_two_fuel(&numbers, n)).collect();
   let fuel = range.iter().fold(i32::MAX, |acc, &n| i32::min(acc, n));
   println!("Stage 2: {}", fuel);
