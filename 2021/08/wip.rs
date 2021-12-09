@@ -53,7 +53,7 @@ impl Signal {
     res[6] = pull_digit(&mut input, |sig| sig.len == 6);
     res[3] = pull_digit(&mut input, |sig| sig.wires & res[1] == res[1]);
     res[2] = pull_digit(&mut input, |sig| sig.wires & res[6] & !res[9] == res[6] & !res[9]);
-    res[5] = pull_digit(&mut input, |sig| true);
+    res[5] = pull_digit(&mut input, |_| true);
 
     let mut newres: HashMap<u8, u8> = HashMap::new();
     res.iter().enumerate().for_each(|(idx, wires)| { newres.insert(*wires, idx as u8); });
@@ -89,12 +89,8 @@ fn main() -> io::Result<()> {
   });
   println!("Stage 1: {}", appearances);
 
-  // Stage 2:
-  let total = INPUT.lines().map(|l| {
-    let t = stage_two(l);
-    println!("T: {}", t);
-    t
-  }).fold(0, |acc, n| acc + n);
+  // Stage 2: 1027422
+  let total = INPUT.lines().map(|l| stage_two(l)).fold(0, |acc, n| acc + n);
   println!("Stage 2: {}", total);
   Ok(())
 }
