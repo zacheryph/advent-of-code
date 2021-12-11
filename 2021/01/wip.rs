@@ -5,10 +5,13 @@ const INPUT: &str = include_str!("input.txt");
 fn main() -> io::Result<()> {
     // Stage 1 (1532): Take 2
     let mut result = -1;
-    INPUT.lines()
+    INPUT
+        .lines()
         .map(|l| l.parse().unwrap())
         .fold(0, |prev, n| {
-            if n > prev { result += 1 }
+            if n > prev {
+                result += 1
+            }
             n
         });
 
@@ -23,7 +26,11 @@ fn main() -> io::Result<()> {
         let back = tail[1..=3].into_iter().fold(0, |m, &x| m + x);
         tail = tail.split_off(1);
 
-        if back > front { acc + 1 } else { acc }
+        if back > front {
+            acc + 1
+        } else {
+            acc
+        }
     });
 
     println!("Stage 2: {}", result);
