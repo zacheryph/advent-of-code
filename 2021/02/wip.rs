@@ -59,9 +59,9 @@ impl Position {
 
 fn main() -> io::Result<()> {
     // Stage 1 (1636725): Take 2
-    let position = INPUT.lines()
-        .map(|l| l.parse::<Movement>().unwrap())
-        .fold(Position::default(), |mut pos, movement| {
+    let position = INPUT.lines().map(|l| l.parse::<Movement>().unwrap()).fold(
+        Position::default(),
+        |mut pos, movement| {
             match movement {
                 Movement {
                     direction: Direction::Up,
@@ -77,14 +77,15 @@ fn main() -> io::Result<()> {
                 } => pos.advance += units,
             }
             pos
-        });
+        },
+    );
 
     println!("Stage 1: {:?} => {}", position, position.result());
 
     // Stage 2 (1872757425): Take 2
-    let position = INPUT.lines()
-        .map(|l| l.parse::<Movement>().unwrap())
-        .fold(Position::default(), |mut pos, movement| {
+    let position = INPUT.lines().map(|l| l.parse::<Movement>().unwrap()).fold(
+        Position::default(),
+        |mut pos, movement| {
             match movement {
                 Movement {
                     direction: Direction::Up,
@@ -103,7 +104,8 @@ fn main() -> io::Result<()> {
                 }
             }
             pos
-        });
+        },
+    );
 
     println!("Stage 2: {:?} => {}", position, position.result());
 
