@@ -1,4 +1,4 @@
-use std::collections::{HashSet,HashMap};
+use std::collections::{HashMap, HashSet};
 
 const INPUT: &str = include_str!("input.txt");
 // const INPUT: &str = include_str!("test.txt");
@@ -11,7 +11,9 @@ struct Graph {
 
 impl Graph {
     fn new(input: &str) -> Self {
-        let mut res = Self { map: HashMap::new() };
+        let mut res = Self {
+            map: HashMap::new(),
+        };
 
         input.lines().for_each(|l| {
             let (a, b) = l.split_once("-").unwrap();
@@ -27,7 +29,7 @@ impl Graph {
             Some(dest) => dest.push(link[1].into()),
             None => {
                 self.map.insert(link[0].into(), Vec::from([link[1].into()]));
-            },
+            }
         };
     }
 }
@@ -36,12 +38,14 @@ fn stage_one_crawl(graph: &mut Graph, paths: &mut Vec<String>, root: &mut Vec<St
     let end = &root[root.len() - 1];
     let child_nodes = graph.map.get(end).unwrap().clone();
     for node in child_nodes {
-        if node.eq(&node.to_lowercase()) && root.contains(&node) { continue }
+        if node.eq(&node.to_lowercase()) && root.contains(&node) {
+            continue;
+        }
 
         if node.eq("end") {
             let full_path = format!("{},end", root.join(","));
             paths.push(full_path);
-            continue
+            continue;
         }
 
         root.push(node.clone());
@@ -55,7 +59,7 @@ fn stage_one() -> i64 {
     // println!("MAP: {:?}", graph.map);
 
     let mut paths: Vec<String> = Vec::new();
-    let mut current: Vec<String> = Vec::from(["start".into()    ]);
+    let mut current: Vec<String> = Vec::from(["start".into()]);
     stage_one_crawl(&mut graph, &mut paths, &mut current);
 
     // println!("PATHS: {:?}", paths);
@@ -66,24 +70,30 @@ fn stage_two_crawl(graph: &mut Graph, paths: &mut Vec<String>, root: &mut Vec<St
     let end = &root[root.len() - 1];
     let child_nodes = graph.map.get(end).unwrap().clone();
     for node in child_nodes {
-        if "start".eq(&node) { continue }
+        if "start".eq(&node) {
+            continue;
+        }
 
         if node.eq("end") {
             let full_path = format!("{},end", root.join(","));
             paths.push(full_path);
-            continue
+            continue;
         }
 
         if node.eq(&node.to_lowercase()) {
-            let (uniq, lower) = root.iter().fold((HashSet::new(), 0), |(mut uniq, mut lower), node| {
-                if node.eq(&node.to_lowercase()) {
-                    uniq.insert(node);
-                    lower += 1;
-                }
-                (uniq, lower)
-            });
+            let (uniq, lower) =
+                root.iter()
+                    .fold((HashSet::new(), 0), |(mut uniq, mut lower), node| {
+                        if node.eq(&node.to_lowercase()) {
+                            uniq.insert(node);
+                            lower += 1;
+                        }
+                        (uniq, lower)
+                    });
 
-            if uniq.contains(&node) && uniq.len() != lower { continue }
+            if uniq.contains(&node) && uniq.len() != lower {
+                continue;
+            }
         }
 
         root.push(node.clone());
@@ -95,7 +105,7 @@ fn stage_two_crawl(graph: &mut Graph, paths: &mut Vec<String>, root: &mut Vec<St
 fn stage_two() -> i64 {
     let mut graph = Graph::new(INPUT);
     let mut paths: Vec<String> = Vec::new();
-    let mut current: Vec<String> = Vec::from(["start".into()    ]);
+    let mut current: Vec<String> = Vec::from(["start".into()]);
 
     stage_two_crawl(&mut graph, &mut paths, &mut current);
     paths.len() as i64
