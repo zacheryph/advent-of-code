@@ -1,8 +1,8 @@
 const INPUT: &str = include_str!("input.txt");
 // const INPUT: &str = include_str!("test.txt");
 
-fn parse_line(line: &str) -> usize {
-    0
+fn parse_input() -> Vec<i64> {
+    Vec::new()
 }
 
 fn stage_one() -> i64 {
