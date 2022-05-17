@@ -5,9 +5,9 @@ const BOARD: std::ops::RangeInclusive<usize> = 1..=10;
 const DETERMINISTIC_DICE: std::ops::RangeInclusive<usize> = 1..=100;
 
 fn parse_input() -> (usize, usize) {
-    INPUT.split_once("\n").iter()
+    INPUT.split_once('\n').iter()
         .map(|(p1, p2)| {
-            (p1.trim().split(" ").last().unwrap().parse().unwrap(), p2.trim().split(" ").last().unwrap().parse().unwrap())
+            (p1.trim().split(' ').last().unwrap().parse().unwrap(), p2.trim().split(' ').last().unwrap().parse().unwrap())
         })
         .next().unwrap()
 }
