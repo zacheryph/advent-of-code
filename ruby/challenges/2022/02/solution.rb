@@ -2,66 +2,58 @@
 module Year2022
   class Day02 < Solution
     def part_1
-      games.map { |elf, me| SHAPE_SCORE[me] + GAME_SCORE[[elf, me]] }.sum
+      pick_map = { "X" => :rock, "Y" => :paper, "Z" => :scissor }
+
+      games
+        .map { |elf, me| game_score(elf, pick_map[me]) }
+        .sum
     end
 
     def part_2
-      games.map do |elf, me|
-        me = part_2_pick(elf, me)
-        SHAPE_SCORE[me] + GAME_SCORE[[elf, me]]
-      end.sum
+      pick_map = { "X" => WINNER, "Y" => DRAW, "Z" => LOSER }
+
+      games
+        .map { |elf, me| [elf, pick_map[me][elf]] }
+        .map { |elf, me| game_score(elf, me) }
+        .sum
     end
 
     private
 
-    SHAPE_MAP = {
-      "A" => :rock,
-      "B" => :paper,
-      "C" => :scissor,
-      "X" => :rock,
-      "Y" => :paper,
-      "Z" => :scissor,
-    }
+    SHAPE_MAP = { "A" => :rock, "B" => :paper, "C" => :scissor }
+    SHAPE_SCORE = { rock: 1, paper: 2, scissor: 3 }
 
-    SHAPE_SCORE = {
-      rock:    1,
-      paper:   2,
-      scissor: 3,
-    }
+    WINNER = {
+      rock:    :scissor,
+      paper:   :rock,
+      scissor: :paper,
+    }.freeze
 
-    GAME_SCORE = {
-      [:rock, :rock] => 3,
-      [:rock, :paper] => 6,
-      [:rock, :scissor] => 0,
-      [:paper, :rock] => 0,
-      [:paper, :paper] => 3,
-      [:paper, :scissor] => 6,
-      [:scissor, :rock] => 6,
-      [:scissor, :paper] => 0,
-      [:scissor, :scissor] => 3,
-    }
+    LOSER = WINNER.invert.freeze
+    DRAW = WINNER.keys.to_h { |k| [k, k] }.freeze
 
-    # this is ugly. rock=lose, paper=draw, scissor=win
-    def part_2_pick(elf, me)
-      case me
-      when :rock
-        SHAPE_SCORE.keys[SHAPE_SCORE.keys.index(elf) - 1]
-      when :paper
-        elf
-      when :scissor
-        SHAPE_SCORE.keys[(SHAPE_SCORE.keys.index(elf) + 1) % 3]
-      end
+    def games
+      input
+        .split("\n")
+        .map(&:split)
+        .map { |elf, us| [SHAPE_MAP[elf], us] }
     end
 
-    def score(game)
-      me = game.last
-      SHAPE_SCORE[me] + GAME_SCORE[game]
+    def game_score(elf, me)
+      case elf
+      when WINNER[me]
+        6
+      when LOSER[me]
+        0
+      else # draw
+        3
+      end + SHAPE_SCORE[me]
     end
 
     def games
       input
         .split("\n")
-        .map { |g| g.split.map { SHAPE_MAP[_1] } }
+        .map { |g| g.split.map { SHAPE_MAP[_1] || _1 } }
     end
   end
 end
