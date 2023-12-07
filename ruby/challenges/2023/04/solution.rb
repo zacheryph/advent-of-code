@@ -23,11 +23,11 @@ module Year2023
       data
         .each_with_index
         .map do |n, idx|
+          cards[idx]
           extra = n[:winners].intersection(n[:scratches]).length
-          cards[idx].times do
-            extra.times { |n| cards[idx+1+n] += 1 }
-          end
+          extra.times { |n| cards[idx+1+n] += cards[idx] }
         end
+
       cards.values.sum
     end
 
