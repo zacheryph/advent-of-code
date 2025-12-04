@@ -15,14 +15,15 @@ class Solution
     @input = input
   end
 
+  # if input is?
+  #   singleline? result of process_input
+  #   multiline? result of process_dataset
   def data
-    @data ||= begin
-                processed = @input.lines(chomp: true).map do |line|
-                  process_input line
-                end
-
-                processed.length == 1 ? processed.first : process_dataset(processed)
-              end
+    @data ||=
+      input
+        .lines(chomp: true)
+        .map { process_input(_1) }
+        .then { _1.one? ? _1.first : process_dataset(_1) }
   end
 
   private
