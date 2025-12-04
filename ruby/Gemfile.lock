@@ -44,9 +44,7 @@ GEM
     thor (1.4.0)
 
 PLATFORMS
-  arm64-darwin-21
-  arm64-darwin-22
-  arm64-darwin-24
+  arm64-darwin-25
 
 DEPENDENCIES
   aoc_rb
