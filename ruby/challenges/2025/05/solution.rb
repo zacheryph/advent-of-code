@@ -2,7 +2,9 @@
 module Year2025
   class Day05 < Solution
     def part_1
-      available_ids.count { |id| fresh_ingredient?(id) }
+      available_ids.count do |id|
+        combined_ranges.any? { it.cover?(id) }
+      end
     end
 
     def part_2
@@ -22,23 +24,33 @@ module Year2025
     end
 
     private
-      def fresh_ingredient?(id)
-        fresh_ranges
-          .any? { |r| r.include?(id) }
-      end
 
-      def fresh_ranges
-        @fresh_ranges ||= input
-          .split("\n\n")
-          .first
-          .split
-          .map do |split|
-            Range.new(*split.split("-").map(&:to_i))
-          end
-      end
+    def data
+      @data ||= input.split("\n\n")
+    end
 
-      def available_ids
-        @available_ids ||= input.split("\n\n").last.split.map(&:to_i)
+    def available_ids
+      @available_ids ||= data.last.split.map(&:to_i)
+    end
+
+    def fresh_ranges
+      @fresh_ranges ||= data
+        .first
+        .split
+        .map { Range.new(*it.split("-").map(&:to_i)) }
+        .sort_by(&:first)
+    end
+
+    def combined_ranges
+      @combined_ranges ||= fresh_ranges.each_with_object([fresh_ranges.first]) do |r, ranges|
+        prev = ranges.last
+
+        if prev.end < r.begin
+          ranges << r
+        else
+          ranges[-1] = Range.new(prev.begin, [prev.end, r.end].max)
+        end
       end
     end
+  end
 end
