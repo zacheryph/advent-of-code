@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
-Dir[File.join(File.dirname(__FILE__), "..", "challenges", "shared", "**", "*.rb")].each do |file|
+challenges_dir = File.join(File.dirname(__FILE__), "..", "challenges")
+
+Dir[File.join(challenges_dir, "shared", "**", "*.rb")].each do |file|
   require file
 end
 
-Dir[File.join(File.dirname(__FILE__), "..", "challenges", "20*", "**", "*.rb")].each do |file|
+Dir[File.join(challenges_dir, "20*", "**", "*.rb")].each do |file|
   require file
 end
 
